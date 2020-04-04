@@ -1,23 +1,9 @@
-require('dotenv').config();
+const { getMeme, getMemes } = require('../db/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
-const connect = require('../lib/utils/connect');
-const mongoose = require('mongoose');
 
 describe('meme routes', () => {
-  beforeAll(() => {
-    connect();
-  });
-
-  beforeEach(() => {
-    return mongoose.connection.dropDatabase();
-  });
-
-  afterAll(() => {
-    return mongoose.connection.close();
-  });
-
   it('creates a meme', () => {
     return request(app)
       .post('/api/v1/memes')
@@ -34,6 +20,16 @@ describe('meme routes', () => {
           bottom: 'what you think it memes',
           __v: 0
         });
+      });
+  });
+
+  it('gets all memes', async() => {
+    const memes = await getMemes();
+
+    return request(app)
+      .get('/api/v1/memes')
+      .then(res => {
+        expect(res.body).toEqual(memes);
       });
   });
 });

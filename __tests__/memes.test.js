@@ -42,4 +42,18 @@ describe('meme routes', () => {
         expect(res.body).toEqual(meme);
       });
   });
+
+  it('updates a meme by id', async() => {
+    const meme = await getMeme();
+
+    return request(app)
+      .patch(`/api/v1/memes/${meme._id}`)
+      .send({ top: 'One does not simply walk into Mordor' })
+      .then(res => {
+        expect(res.body).toEqual({
+          ...meme,
+          top: 'One does not simply walk into Mordor'
+        });
+      });
+  });
 });
